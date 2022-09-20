@@ -4,21 +4,26 @@ const Button = ({ handleClick, text}) =>
     <button onClick={handleClick}>{text}</button>
 
 const StatisticsLine = ({ text, value }) =>
-  <>{text}: {value}<br/></>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 
 const Statistics = ({ goodAmount, neutralAmount, badAmount }) => {
   const totalAmount = goodAmount + neutralAmount + badAmount
   const average = (goodAmount + (badAmount * -1)) / totalAmount
   const positivePerc = (goodAmount / totalAmount) * 100
   if (totalAmount > 0) {
-    return <>
-      <StatisticsLine text='Good' value={goodAmount}/>
-      <StatisticsLine text='Neutral' value={neutralAmount}/>
-      <StatisticsLine text='Bad' value={badAmount}/>
-      <StatisticsLine text='All' value={totalAmount}/>
-      <StatisticsLine text='Average' value={average}/>
-      <StatisticsLine text='Positive' value={positivePerc + '%'}/>
-    </>
+    return <table>
+      <tbody>
+        <StatisticsLine text='Good' value={goodAmount}/>
+        <StatisticsLine text='Neutral' value={neutralAmount}/>
+        <StatisticsLine text='Bad' value={badAmount}/>
+        <StatisticsLine text='All' value={totalAmount}/>
+        <StatisticsLine text='Average' value={average}/>
+        <StatisticsLine text='Positive' value={positivePerc + '%'}/>
+      </tbody>
+    </table>
   } else {
     return <>
       No feedback given
