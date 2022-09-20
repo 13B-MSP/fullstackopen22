@@ -32,22 +32,15 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const handleGoodButtonClick = () => {
-    setGood(good +1)
-  }
-  const handleNeutralButtonClick = () => {
-    setNeutral(neutral +1)
-  }
-  const handleBadButtonClick = () => {
-    setBad(bad +1)
-  }
+  const createButtonClickHandler = (curValue, setter) =>
+    () => setter(curValue+1)
 
   return (
     <div>
       <h1>Give feedback</h1>
-      <Button handleClick={handleGoodButtonClick} text='Good'/>
-      <Button handleClick={handleNeutralButtonClick} text='Neutral'/>
-      <Button handleClick={handleBadButtonClick} text='Bad'/>
+      <Button handleClick={createButtonClickHandler(good, setGood)} text='Good'/>
+      <Button handleClick={createButtonClickHandler(neutral, setNeutral)} text='Neutral'/>
+      <Button handleClick={createButtonClickHandler(bad, setBad)} text='Bad'/>
       <h1>Statistics</h1>
       <Statistics goodAmount={good} neutralAmount={neutral} badAmount={bad}/>
     </div>
