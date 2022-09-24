@@ -1,35 +1,7 @@
+import SearchResult from "./components/SearchResult"
+
 import { useState, useEffect } from "react"
 import axios from 'axios'
-
-const CountryInfo = ({ country }) =>
-  <div>
-    <h2>{country.name.common}</h2>
-    <div>capital {country.capital[0]}</div>
-    <div>area {country.area}</div>
-    <img src={country.flags.png} alt="flag"/>
-  </div>
-
-const CountryEntry = ({ country }) => {
-  const [show, setShow] = useState(false)
-  return <div>
-    {(show) ? <CountryInfo country={country}/> : country.name.common}
-    <button onClick={() => setShow(!show)}>
-      {(show) ? "Hide" : "Show"}
-    </button>
-  </div>
-}
-
-const SearchResult = ({ countries }) => {
-  if (countries.length > 10) {
-    return <div>Too many matches</div>
-  } else if (countries.length === 1) {
-    return <CountryInfo country={countries[0]}/>
-  } else {
-    return <>
-      {countries.map(country => <CountryEntry country={country}/>)}
-    </>
-  }
-}
 
 const App = () => {
   const [search, setSearch] = useState('')
@@ -39,10 +11,9 @@ const App = () => {
   useEffect(() => {
     axios
       .get('https://restcountries.com/v3.1/all')
-      .then((response => {
-        console.log(response.data[0]);
+      .then(response =>
         setCountries(response.data)
-      }))
+      )
   }, [])
 
   const countriesFilter = country =>
