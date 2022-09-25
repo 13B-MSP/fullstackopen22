@@ -1,4 +1,4 @@
-const PhonebookEntry = ({ person }) =>
-    <li>{person.name}, {person.phoneNr}</li>
+const PhonebookEntry = ({ person, handleDelete }) =>
+    <li>{person.name}, {person.number} <button onClick={handleDelete}>delete</button> </li>
 
 export default PhonebookEntry

@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react'
 import AddNewPerson from './components/AddNewPerson'
 import DisplayPhonebook from './components/DisplayPhonebook'
 import Search from './components/Search'
-
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -13,27 +12,38 @@ const App = () => {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
-    }, [])
+    personService.getAll()
+      .then(allPersons => setPersons(allPersons))
+  }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
-    if (persons.find(person => person.name === newName)) {
-      alert(`person with name '${newName}' already defined`)
+    const existingPerson = persons.find(person => person.name === newName)
+    if (existingPerson) {
+      if (window.confirm(`${existingPerson.name} already in phonebook, update new number?`)) {
+        const updatedPerson = { ...existingPerson, number: newPhoneNr }
+        personService
+          .update(existingPerson.id, updatedPerson)
+          .then(returnedPerson => setPersons(persons.map(p => p.id !== existingPerson.id ? p : returnedPerson)))
+      }
     } else {
       const newPerson = {
-        id: persons.length +1,
         name: newName,
-        phoneNr: newPhoneNr
+        number: newPhoneNr
       }
-      setPersons(persons.concat([newPerson]))
+      personService
+        .create(newPerson)
+        .then(returnedPerson => setPersons(persons.concat([returnedPerson])))
     }
     setNewName('')
     setNewPhoneNr('')
+  }
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService
+        .remove(id)
+        .then(() => setPersons(persons.filter(p => p.id !== id)))
+    }
   }
 
   return (
@@ -46,7 +56,7 @@ const App = () => {
         handleNameChange={e => setNewName(e.target.value)}
         handlePhoneNrChange={e => setNewPhoneNr(e.target.value)}/>
       <h2>Numbers</h2>
-      <DisplayPhonebook persons={persons} search={search}/>
+      <DisplayPhonebook persons={persons} search={search} deletePerson={deletePerson}/>
     </div>
   )
 }
